@@ -1,42 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voz a texto</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reconocimiento de Voz</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>🎙️ Voz a Texto</h1>
-<button id="start">Iniciar</button>
-<p id="resultado"></p>
+  <h1>🎙️ Reconocimiento de Voz a Texto</h1>
+  <p>Presiona el botón y empieza a hablar. El texto aparecerá abajo.</p>
+  
+  <button id="start">🎧 Iniciar grabación</button>
+  <button id="stop" disabled>🛑 Detener</button>
+  
+  <div id="resultado"></div>
 
-<script>
-if (!('webkitSpeechRecognition' in window)) {
-  alert("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
-} else {
-  const reconocimiento = new webkitSpeechRecognition();
-  reconocimiento.lang = "es-MX";
-  reconocimiento.continuous = true;
-  reconocimiento.interimResults = true;
-
-  const boton = document.getElementById("start");
-  const salida = document.getElementById("resultado");
-
-  boton.onclick = () => {
-    reconocimiento.start();
-    salida.textContent = "🎧 Escuchando...";
-  };
-
-  reconocimiento.onresult = e => {
-    let texto = "";
-    for (let i = e.resultIndex; i < e.results.length; ++i) {
-      texto += e.results[i][0].transcript + " ";
-    }
-    salida.textContent = texto;
-  };
-
-  reconocimiento.onerror = e => console.log("Error:", e.error);
-}
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
