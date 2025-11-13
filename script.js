@@ -1,62 +1,36 @@
-const startBtn = document.getElementById("start");
-const stopBtn = document.getElementById("stop");
-const resultadoEl = document.getElementById("resultado");
-const micSelect = document.getElementById("micSelect");
-
-let recognition;
-let stream;
-
-// Mostrar micrófonos disponibles
-navigator.mediaDevices.enumerateDevices().then(devices => {
-  const mics = devices.filter(d => d.kind === "audioinput");
-  micSelect.innerHTML = mics.map(m => `<option value="${m.deviceId}">${m.label || "Micrófono"}</option>`).join("");
-});
-
-async function obtenerAudio(deviceId) {
-  if (stream) stream.getTracks().forEach(t => t.stop());
-  stream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: deviceId ? { exact: deviceId } : undefined } });
+body {
+  font-family: "Arial", sans-serif;
+  background: #f5f5f5;
+  text-align: center;
+  padding: 30px;
 }
 
-// Configurar SpeechRecognition
-if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition();
-  recognition.lang = "es-MX";
-  recognition.continuous = true;
-  recognition.interimResults = true;
-
-  recognition.onresult = (event) => {
-    let texto = "";
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      texto += event.results[i][0].transcript + " ";
-    }
-    resultadoEl.textContent = texto.trim();
-  };
-
-  recognition.onerror = (event) => {
-    console.error("Error:", event.error);
-  };
-
-  recognition.onend = () => {
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-  };
-} else {
-  alert("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
+h1 {
+  color: #333;
 }
 
-startBtn.addEventListener("click", async () => {
-  await obtenerAudio(micSelect.value);
-  recognition.start();
-  startBtn.disabled = true;
-  stopBtn.disabled = false;
-  resultadoEl.textContent = "🎙️ Escuchando...";
-});
+button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px;
+  transition: background 0.3s;
+}
 
-stopBtn.addEventListener("click", () => {
-  recognition.stop();
-  if (stream) stream.getTracks().forEach(t => t.stop());
-  startBtn.disabled = false;
-  stopBtn.disabled = true;
-});
+button:hover {
+  background: #0056b3;
+}
 
+#resultado {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 30px;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  min-height: 100px;
+}
